@@ -22,7 +22,7 @@ class App {
     app.get("/", (req, res) => {
       res.json({
         project: "IF.IO API",
-        version: "beta",
+        version: "1.0.0",
         author: "Prof. Marcelo F. Terenciani",
       });
     });
