@@ -1,6 +1,5 @@
 class PrivateCounter {
   constructor() {
-    this.message = "I am an instance";
     this.counter = 0;
   }
 }
