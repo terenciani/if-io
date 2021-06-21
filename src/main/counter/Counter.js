@@ -14,4 +14,5 @@ class Counter {
     return Counter.instance;
   }
 }
+
 module.exports = Counter;
