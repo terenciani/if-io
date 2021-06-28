@@ -1,26 +1,25 @@
 "use strict";
 
-const Counter = require("../counter/Counter");
+const CounterService = require("../service/CounterService");
 
 module.exports = class CounterController {
   static async increment(req, res) {
     try {
-      Counter.getInstance().counter++;
-      res.status(200).send({ counter: Counter.getInstance().counter });
+      res.status(200).send(CounterService.increment());
     } catch (e) {
       res.status(500).send(e.message);
       global.logger.error("CounterController.increment" + e.message);
     }
-  } // login()
+  } // increment()
 
   static async getCounter(req, res) {
     try {
-      res.status(200).send({ counter: Counter.getInstance().counter });
+      res.status(200).send(CounterService.getCounter());
     } catch (e) {
       res.status(500).send(e.message);
       global.logger.error("CounterController.getCounter" + e.message);
     }
-  } // login()
+  } // getCounter()
 
   static async decrement(req, res) {
     try {
@@ -30,5 +29,5 @@ module.exports = class CounterController {
       res.status(500).send(e.message);
       global.logger.error("CounterController.decrement " + e.message);
     }
-  } // listarTodos()
+  } // decrement()
 }; // class
