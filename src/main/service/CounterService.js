@@ -1,6 +1,6 @@
 "use strict";
 
-const Counter = require("../model/Counter");
+const Counter = require("../singleton/Counter");
 
 module.exports = class CounterService {
   static getCounter() {
