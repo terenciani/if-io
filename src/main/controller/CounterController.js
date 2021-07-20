@@ -23,11 +23,25 @@ module.exports = class CounterController {
 
   static async decrement(req, res) {
     try {
-      Counter.getInstance().counter--;
-      res.status(200).send({ counter: Counter.getInstance().counter });
+      res.status(200).send(CounterService.decrement());
     } catch (e) {
       res.status(500).send(e.message);
       global.logger.error("CounterController.decrement " + e.message);
     }
   } // decrement()
+  static saveCounter() {
+    try {
+      CounterService.saveCounter();
+    } catch (e) {
+      global.logger.error("CounterController.saveCounter " + e.message);
+    }
+  } // saveCounter()
+
+  static initCounter() {
+    try {
+      CounterService.initCounter();
+    } catch (e) {
+      global.logger.error("CounterService.initCounter " + e.message);
+    }
+  } // initCounter()
 }; // class

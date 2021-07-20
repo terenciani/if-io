@@ -9,7 +9,7 @@ class Server {
     this.app = new Express();
 
     this.port = this.normalizePort(4000);
-    this.debug = debug("association:server");
+    this.debug = debug("ifio:api");
 
     this.server = http.createServer(this.app);
     this.server.on("error", this.onError);
