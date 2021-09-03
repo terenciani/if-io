@@ -48,9 +48,6 @@ describe("Rota autenticação  /signin", function () {
     };
 
     const {body, statusCode} = await supertest(app).post("/signin").send(jsonData);
-
-    console.log(statusCode)
-
     expect(statusCode).toBe(200);
     expect(body.email).toBe(jsonData.email);
   });
@@ -158,8 +155,6 @@ describe("Rota validação de token  /validate-token", function () {
     };
     const response = await supertest(app).post("/signin").send(jsonData);
     const {body, statusCode} = await supertest(app).post("/validate-token").send({token: response.body.token});
-    
-    console.log(body)
     expect(statusCode).toBe(200);
     expect(body.isValid).toBe(true);
   });

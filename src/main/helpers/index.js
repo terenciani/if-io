@@ -1,5 +1,5 @@
 const HTTPcodes = require("./HTTPcodes");
-const enumHelper = require("./enumHelper");
+const enumHelpers = require("./enumHelpers");
 const customErrors = require("./customErrors");
 
-module.exports = { HTTPcodes, customErrors, enumHelper };
+module.exports = { HTTPcodes, customErrors, enumHelpers };
