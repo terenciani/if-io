@@ -40,6 +40,15 @@ describe("Rota autenticação  /signin", function () {
     await removeAllUsers()
     closeTest()
   });
+  it("Token não fornecido", async () => {
+    const {body} = await supertest(app).post("/validate-token")
+
+    const erro = customErrors.auth.tokenNotProvided;
+
+    expect(body.statusCode).toBe(erro.statusCode);
+    expect(body.code).toBe(erro.code);
+    expect(body.message).toBe(erro.message);
+  });
   it("Login bem sucedido", async () => {
     const jsonData = {
       email: "testeok@teste.com",

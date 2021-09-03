@@ -10,4 +10,9 @@ module.exports = class AuthController {
     const sendResponseToClient = responseConstructor(res);
     return sendResponseToClient(await AuthService.signIn(req.body));
   } // signin()
+
+  static async validateIfTokenIsValid(req, res) {
+    const sendResponseToClient = responseConstructor(res);
+    return sendResponseToClient(await AuthService.isTokenValid(req.body));
+  }
 };

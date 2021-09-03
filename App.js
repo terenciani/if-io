@@ -4,7 +4,7 @@ require("./src/main/service/Logger");
 require("./config");
 
 const express = require("express");
-// const cors = require("cors");
+const cors = require("cors");
 const Loader = require("./Loader");
 const Server = require("./Server");
 const schedule = require("node-schedule");
@@ -23,6 +23,7 @@ class App {
       process.exit(1);
     }
 
+    app.use(cors());
     // parse requests of content-type - application/json
     app.use(express.json());
 
