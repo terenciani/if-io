@@ -6,9 +6,7 @@ class TokenUtil {
         return sign({ user }, jwt.secret, { expiresIn: jwt.expiresIn });
     }
     static decodeToken(token) {
-        const jwt = global.config.jwt;
-        const [_, tokenWithoutBearer] = token.split('Bearer').map(text => text.trim());
-        return verify(tokenWithoutBearer, jwt.secret);
+        return verify(token, global.config.jwt.secret);
     }
 }
 

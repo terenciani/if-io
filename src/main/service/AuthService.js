@@ -38,18 +38,13 @@ module.exports = class AuthService {
   static async isTokenValid({ token }){
     try {
       if(!token) return customErrors.auth.tokenNotProvided;
-
       const { user } = TokenUtil.decodeToken(token);
-      console.log("asdfasdfa" + user)
       return { isValid: Boolean(user._id), message: 'Token válido.' };
     } catch (err) {
-      console.log(err)
+      if(err.name == "TokenExpiredError")
+        return customErrors.auth.expiredToken;
       return customErrors.auth.invalidToken
     }
-    
-
-    const isValid = AuthService.isValidToken(token);
-    return res.status(200).send({ isValid });
   }
   static async prepareUser(user, token) {
     return {

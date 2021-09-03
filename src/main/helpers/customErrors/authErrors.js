@@ -36,6 +36,11 @@ const auth = {
     code: "AUTH0007",
     message: "O token deve ser fornecido para validação.",
   },
+  expiredToken: {
+    statusCode: HTTPcodes.UNAUTHORIZED,
+    code: "AUTH0008",
+    message: "O token de acesso fornecido expirou. Realize o login novamente.",
+  },
 };
 
 module.exports = auth;

@@ -32,23 +32,15 @@ function closeTest() {
   Mongoose.connection.close();
 }
 
+beforeAll(() => {
+  insertUser()
+});
+afterAll(async () => {
+  await removeAllUsers()
+  closeTest()
+});
+
 describe("Rota autenticação  /signin", function () {
-  beforeAll(() => {
-    insertUser()
-  });
-  afterAll(async () => {
-    await removeAllUsers()
-    closeTest()
-  });
-  it("Token não fornecido", async () => {
-    const {body} = await supertest(app).post("/validate-token")
-
-    const erro = customErrors.auth.tokenNotProvided;
-
-    expect(body.statusCode).toBe(erro.statusCode);
-    expect(body.code).toBe(erro.code);
-    expect(body.message).toBe(erro.message);
-  });
   it("Login bem sucedido", async () => {
     const jsonData = {
       email: "testeok@teste.com",
@@ -139,5 +131,54 @@ describe("Rota autenticação  /signin", function () {
     expect(body.code).toBe(erro.code);
     expect(body.message).toBe(erro.message);
   });
-  
+});
+
+describe("Rota validação de token  /validate-token", function () {
+  it("Token expirado", async () => {
+    const { sign } = require('jsonwebtoken');
+    const jsonData = {
+      email: "testeok@teste.com",
+      password: "54321",
+    };
+
+    token = sign({ jsonData }, global.config.jwt.secret, { expiresIn: 0 });
+    
+    const {body} = await supertest(app).post("/validate-token").send({token: token});
+    
+    const erro = customErrors.auth.expiredToken;
+
+    expect(body.statusCode).toBe(erro.statusCode);
+    expect(body.code).toBe(erro.code);
+    expect(body.message).toBe(erro.message);
+  });
+  it("Token válido", async () => {
+    const jsonData = {
+      email: "testeok@teste.com",
+      password: "54321",
+    };
+    const response = await supertest(app).post("/signin").send(jsonData);
+    const {body, statusCode} = await supertest(app).post("/validate-token").send({token: response.body.token});
+    
+    console.log(body)
+    expect(statusCode).toBe(200);
+    expect(body.isValid).toBe(true);
+  });
+  it("Token inválido", async () => {
+    const {body} = await supertest(app).post("/validate-token").send({token: "123412413241324"});
+
+    const erro = customErrors.auth.invalidToken;
+
+    expect(body.statusCode).toBe(erro.statusCode);
+    expect(body.code).toBe(erro.code);
+    expect(body.message).toBe(erro.message);
+  });
+  it("Token não fornecido", async () => {
+    const {body} = await supertest(app).post("/validate-token")
+
+    const erro = customErrors.auth.tokenNotProvided;
+
+    expect(body.statusCode).toBe(erro.statusCode);
+    expect(body.code).toBe(erro.code);
+    expect(body.message).toBe(erro.message);
+  });
 });
