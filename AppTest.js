@@ -2,49 +2,50 @@
 
 require("./src/main/service/Logger");
 require("./config");
-const ConnectionFactory = require("./src/main/connection/ConnectionFactory");
 const express = require("express");
-// const cors = require("cors");
+const path = require("path");
 const Loader = require("./Loader");
-const Server = require("./Server");
+const mongoose = require("mongoose");
 
-class App {
-  static async init() {
-    let app = new Server();
+const app = express();
 
-    // app.use(cors());
-
-    try {
-      global.logger.info("Establishing the database connection...");
-      await ConnectionFactory.getConnection();
-      global.logger.success("Database connected successfully!");
-    } catch (error) {
-      global.logger.error(`Database connecting error: ${error.message}`);
-      process.exit(1);
-    }
-
-    // parse requests of content-type - application/json
-    app.use(express.json());
-
-    Loader.loadAll(app);
-
-    // simple route
-    app.get("/", (req, res) => {
-      res.json({
-        project: "IF.IO API",
-        version: "1.0.0",
-        author: "Prof. Marcelo F. Terenciani",
-      });
-    });
-
-    // set port, listen for requests
-    const PORT = process.env.PORT || 2000;
-    app.listen(PORT, () => {
-      global.logger.success(`IF.IO - API: port ${PORT}`);
-    });
-
-    return app;
-  }
+try {
+  mongoose.connect(`mongodb://${global.config.dbTest.url}/${global.config.dbTest.name}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+} catch (error) {
+  process.exit(1);
 }
 
-module.exports = App;
+global.appRoot = path.resolve(__dirname);
+
+// parse requests of content-type - application/json
+app.use(
+  express.json({
+    limit: "50mb",
+  })
+);
+
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(
+  express.urlencoded({
+    limit: "50mb",
+    extended: true,
+  })
+);
+
+Loader.loadAll(app);
+
+// simple route
+app.get("/", (req, res) => {
+  res.json({
+    project: "Plataforma de Gerenciamento de Associações",
+    version: "beta",
+    author: "IFPR-Paranavaí",
+  });
+});
+
+const server = app.listen(5000);
+
+module.exports = { app, server };

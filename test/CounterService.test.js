@@ -1,4 +1,4 @@
-const Counter = require("../src/main/singleton/Counter");
+const Counter = require("../src/main/singleton/CounterSingleton");
 const CounterService = require("../src/main/service/CounterService");
 
 test("Incrementar Contador 1 vez", () => {

@@ -9,7 +9,7 @@ module.exports = class User extends Mongoose.Schema {
       lastname: String,
       email: String,
       password: String,
-      profile: String,
+      rule: String,
       status: String,
       create_at: Date,
       access_at: Date,
