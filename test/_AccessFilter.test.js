@@ -2,6 +2,7 @@ const supertest = require("supertest");
 const { sign } = require('jsonwebtoken');
 const { app, server } = require("../AppTest");
 const customErrors = require("../src/main/helpers/customErrors");
+const HTTPcodes = require("../src/main/helpers/HTTPcodes");
 const { enumHelpers } = require('../src/main/helpers/index');
 
 const Mongoose = require("mongoose");
@@ -51,7 +52,7 @@ afterAll(async ()=>{
 describe("Rotas publicas", function () {
   it("Route /", async () => {
     const {statusCode} = await supertest(app).get("/")
-    expect(statusCode).toBe(200);
+    expect(statusCode).toBe(HTTPcodes.OK);
   });
 });
 
