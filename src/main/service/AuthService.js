@@ -40,10 +40,15 @@ module.exports = class AuthService {
       if(!token) return customErrors.auth.tokenNotProvided;
       const { user } = TokenUtil.decodeToken(token);
       return { isValid: Boolean(user._id), message: 'Token válido.' };
-    } catch (err) {
-      if(err.name == "TokenExpiredError")
-        return customErrors.auth.expiredToken;
-      return customErrors.auth.invalidToken
+    } catch (error) {
+      switch (error.name) {
+        case "JsonWebTokenError":
+          return sendResponseToClient(customErrors.auth.invalidToken);
+        case "TokenExpiredError":
+          return sendResponseToClient(customErrors.auth.expiredToken);
+        default:
+          return sendResponseToClient(customErrors.auth.errorOnValidateToken);
+      }
     }
   }
   static async prepareUser(user, token) {

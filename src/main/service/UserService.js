@@ -11,4 +11,11 @@ module.exports = class UserService {
       throw new Error("UserService.getUserList: " + e.message);
     }
   } // getUserList()
+  static async getById(userId){
+    try {
+      return await User.findById(userId);
+    } catch (error) {
+      return customErrors.globals.catchError;
+    }
+  }
 };
