@@ -27,7 +27,7 @@ const auth = {
     message: "O e-mail informado não está ativo.",
   },
   invalidToken:{
-    statusCode: HTTPcodes.UNAUTHORIZED,
+    statusCode: HTTPcodes.BAD_REQUEST,
     code: "AUTH0006",
     message: "Não foi possível validar o token fornecido.",
   },
@@ -40,6 +40,21 @@ const auth = {
     statusCode: HTTPcodes.UNAUTHORIZED,
     code: "AUTH0008",
     message: "O token de acesso fornecido expirou. Realize o login novamente.",
+  },
+  errorOnValidateToken: {
+    statusCode: HTTPcodes.UNPROCESSABLE_ENTITY,
+    code: 'AUTH0009',
+    message: 'Erro ao verificar o token.'
+  },
+  accessDenied: {
+    statusCode: HTTPcodes.FORBIDDEN,
+    code: "AUTH0010",
+    message: "Área restrita.",
+  },
+  unauthorized: {
+    statusCode: HTTPcodes.UNAUTHORIZED,
+    code: "AUTH0011",
+    message: "Acesso não autorizado.",
   },
 };
 
