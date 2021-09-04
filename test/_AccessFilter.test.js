@@ -10,7 +10,6 @@ const User = Mongoose.model("User");
 const AuthService = require("../src/main/service/AuthService");
 
 async function insertUser() {
-  console.log("insert")
   await User.insertMany([
     {
       name: "Tester",
@@ -20,10 +19,17 @@ async function insertUser() {
       status: enumHelpers.users.status.active
     },
     {
-      name: "Tester",
+      name: "Tester sem Rule",
       email: "testenorule@teste.com",
       password: "54321",
       status: enumHelpers.users.status.active
+    },
+    {
+      name: "Tester Inativo",
+      email: "testerinativo@teste.com",
+      password: "54321",
+      status: enumHelpers.users.status.inactive,
+      rule: enumHelpers.users.rules.manager,
     }
   ])
 }
@@ -49,11 +55,33 @@ describe("Rotas publicas", function () {
   });
 });
 
-const commonRoutes = ["/counter", "/increment"]
+const commonRoutes = ["/counter", "/increment", "/decrement"];
+const managerRoutes = ["/user"];
+
+const routesWithToken = commonRoutes.concat(managerRoutes)
 
 
-describe("Rotas do usuário comum", function () {
-  commonRoutes.forEach(async (route) => {
+describe("Testes de token comuns as rotas privadas", function () {
+  routesWithToken.forEach(async (route) => {
+    it(`Usuário inativado com token válido ${route}`, async () => {
+      const jsonData = {
+        email: "testerinativo@teste.com",
+        password: "54321",
+      };
+      await User.updateOne({email: jsonData.email}, {status: enumHelpers.users.status.active})
+      
+      const { token }  = await AuthService.signIn(jsonData);
+
+      await User.updateOne({email: jsonData.email}, {status: enumHelpers.users.status.inactive})
+
+      const { body } = await supertest(app).get(route).set('x-access-token', token);
+  
+      const erro = customErrors.auth.unauthorized;
+  
+      expect(body.statusCode).toBe(erro.statusCode);
+      expect(body.code).toBe(erro.code);
+      expect(body.message).toBe(erro.message);
+    });
     it(`Rule diferente da esperada ${route}`, async () => {
       const jsonData = {
         email: "testenorule@teste.com",
