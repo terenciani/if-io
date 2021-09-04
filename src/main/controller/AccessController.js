@@ -1,4 +1,6 @@
+const UserService = require("../service/UserService")
 const customErrors = require("../helpers/customErrors");
+const { enumHelpers } = require("../helpers");
 const { decodeToken } = require('../utils/TokenUtil');
 
 const responseBuilder = (res) => (responsePayload) => 
@@ -14,11 +16,14 @@ module.exports = class AccessController{
 
             try {
                 const { user, iat } = decodeToken(token);
-                console.log("user" + JSON.stringify(user))
                 if (!user || !user._id)
                     return sendResponseToClient(customErrors.auth.accessDenied);
                 
+                const { rule, status } = await UserService.findById(user._id);
                 
+                if (target === rule || rule === enumHelpers.users.rules.manager) next();
+                else return sendResponseToClient(customErrors.auth.unauthorized);
+
             } catch (error) {
                 global.logger.error(error.name + ' ' + error.message)
                 switch (error.name) {

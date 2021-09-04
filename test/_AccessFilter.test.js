@@ -7,14 +7,25 @@ const { enumHelpers } = require('../src/main/helpers/index');
 const Mongoose = require("mongoose");
 const User = Mongoose.model("User");
 
+const AuthService = require("../src/main/service/AuthService");
+
 async function insertUser() {
-  await User.insertMany([{
+  console.log("insert")
+  await User.insertMany([
+    {
       name: "Tester",
       email: "testeok@teste.com",
       password: "54321",
       rule: enumHelpers.users.rules.manager,
       status: enumHelpers.users.status.active
-  }])
+    },
+    {
+      name: "Tester",
+      email: "testenorule@teste.com",
+      password: "54321",
+      status: enumHelpers.users.status.active
+    }
+  ])
 }
 async function removeAllUsers() {
   return await User.deleteMany({})
@@ -24,11 +35,11 @@ function closeTest() {
   Mongoose.connection.close();
 }
 
-beforeAll(() => {
-  insertUser();
+beforeAll(async () => {
+  await insertUser();
 });
-afterAll(()=>{
-  removeAllUsers();
+afterAll(async ()=>{
+  await removeAllUsers();
 });
 
 describe("Rotas publicas", function () {
@@ -43,6 +54,21 @@ const commonRoutes = ["/counter", "/increment"]
 
 describe("Rotas do usuário comum", function () {
   commonRoutes.forEach(async (route) => {
+    it(`Rule diferente da esperada ${route}`, async () => {
+      const jsonData = {
+        email: "testenorule@teste.com",
+        password: "54321",
+      };
+      const { token }  = await AuthService.signIn(jsonData);
+
+      const {body} = await supertest(app).get(route).set('x-access-token', token);
+  
+      const erro = customErrors.auth.unauthorized;
+  
+      expect(body.statusCode).toBe(erro.statusCode);
+      expect(body.code).toBe(erro.code);
+      expect(body.message).toBe(erro.message);
+    });
     it(`Dados do token fora de padrão ${route}`, async () => {
       const jsonData = {
         email: "testeok@teste.com",
