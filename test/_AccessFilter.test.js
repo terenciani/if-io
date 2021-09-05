@@ -1,9 +1,12 @@
 const supertest = require("supertest");
 const { sign } = require('jsonwebtoken');
-const { app, server } = require("../AppTest");
+const { app } = require("../AppTest");
 const customErrors = require("../src/main/helpers/customErrors");
 const HTTPcodes = require("../src/main/helpers/HTTPcodes");
 const { enumHelpers } = require('../src/main/helpers/index');
+
+
+const server = app.listen(5010);
 
 const Mongoose = require("mongoose");
 const User = Mongoose.model("User");
@@ -37,16 +40,18 @@ async function insertUser() {
 async function removeAllUsers() {
   return await User.deleteMany({})
 }
-function closeTest() {    
-  server.close();
-  Mongoose.connection.close();
+async function closeTest() {
+  await  Mongoose.connection.close();
+  await server.close();
 }
 
 beforeAll(async () => {
   await insertUser();
 });
-afterAll(async ()=>{
+
+afterAll(async ()=>{  
   await removeAllUsers();
+  closeTest()
 });
 
 describe("Rotas publicas", function () {

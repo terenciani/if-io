@@ -1,9 +1,7 @@
-"use strict";
-
-const CounterSingleton = require("../singleton/CounterSingleton");
-
 const Mongoose = require("mongoose");
 const Counter = Mongoose.model("Counter");
+
+const CounterSingleton = require("../singleton/CounterSingleton");
 
 module.exports = class CounterService {
   static getCounter() {

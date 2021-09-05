@@ -43,11 +43,11 @@ module.exports = class AuthService {
     } catch (error) {
       switch (error.name) {
         case "JsonWebTokenError":
-          return sendResponseToClient(customErrors.auth.invalidToken);
+          return customErrors.auth.invalidToken;
         case "TokenExpiredError":
-          return sendResponseToClient(customErrors.auth.expiredToken);
+          return customErrors.auth.expiredToken;
         default:
-          return sendResponseToClient(customErrors.auth.errorOnValidateToken);
+          return customErrors.auth.errorOnValidateToken;
       }
     }
   }

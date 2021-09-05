@@ -1,7 +1,9 @@
 const supertest = require("supertest");
-const { app, server } = require("../AppTest");
+const { app } = require("../AppTest");
 const customErrors = require("../src/main/helpers/customErrors");
 const enumHelpers = require("../src/main/helpers/enumHelpers");
+
+const server = app.listen(5020);
 
 const Mongoose = require("mongoose");
 const User = Mongoose.model("User");
@@ -27,16 +29,18 @@ async function insertUser() {
 async function removeAllUsers() {
   return await User.deleteMany({})
 }
-function closeTest() {    
-  server.close();
-  Mongoose.connection.close();
+
+async function closeTest() {
+  await  Mongoose.connection.close();
+  await server.close();
 }
 
-beforeAll(() => {
-  insertUser()
+beforeAll(async () => {
+  await insertUser();
 });
-afterAll(async () => {
-  await removeAllUsers()
+
+afterAll(async ()=>{  
+  await removeAllUsers();
   closeTest()
 });
 
