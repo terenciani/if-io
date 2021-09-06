@@ -13,5 +13,7 @@ module.exports = class CounterRoute {
     app.route("/decrement").get(commonAccess.verify, CounterController.decrement);
 
     app.route("/counter").get(commonAccess.verify, CounterController.getCounter);
+
+    app.route("/last-counter/:limit").get(commonAccess.verify, CounterController.getLastCountersByLimit);
   } // constructor()
 }; // class

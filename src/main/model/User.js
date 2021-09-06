@@ -11,8 +11,8 @@ module.exports = class User extends Mongoose.Schema {
       password: String,
       rule: String,
       status: String,
-      create_at: Date,
-      access_at: Date,
+      created_at: Date,
+      accessed_at: Date,
     });
     Mongoose.model("User", this);
   } // constructor()

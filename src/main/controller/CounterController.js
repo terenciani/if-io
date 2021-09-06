@@ -44,4 +44,13 @@ module.exports = class CounterController {
       global.logger.error("CounterService.initCounter " + e.message);
     }
   } // initCounter()
+
+  static async getLastCountersByLimit(req, res) {
+    try {
+      res.status(200).send(await CounterService.getLastCountersByLimit(req.params));
+    } catch (e) {
+      res.status(500).send(e.message);
+      global.logger.error("CounterController.getLastCountersByLimit" + e.message);
+    }
+  } // getLastCountersByLimit()
 }; // class

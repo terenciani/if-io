@@ -31,15 +31,6 @@ module.exports = class CounterService {
   } // decrement()
   static async saveCounter() {
     try {
-      var lastHour = new Date();
-      lastHour.setMinutes(0);
-      lastHour.setSeconds(0);
-      lastHour.setMilliseconds(0);
-      let newestCounter = await Counter.findOne({ created_at: { $gte: lastHour } }).sort({
-        created_at: -1,
-      });
-      if (newestCounter?.counter == CounterSingleton.getInstance().counter) return;
-
       await Counter.create({ counter: CounterSingleton.getInstance().counter });
     } catch (e) {
       throw new Error("CounterService.saveCounter: " + e.message);
@@ -54,4 +45,13 @@ module.exports = class CounterService {
       throw new Error("CounterService.initCounter: " + e.message);
     }
   } // initCounter()
+  static async getLastCountersByLimit({limit}) {
+    try {
+      let result = await Counter.find({}).sort({ created_at: -1 }).limit(Number(limit));
+      return result
+    } catch (e) {
+      console.log(e)
+      throw new Error("CounterService.getLastCountersByLimit: " + e.message);
+    }
+  } // getLastCountersByLimit()
 }; // class
